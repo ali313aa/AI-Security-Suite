@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Security Suite</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #0f172a, #111827);
+        color: #e2e8f0;
+        margin: 0;
+        padding: 32px;
+      }
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+      }
+      .card {
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+      textarea, input, button {
+        width: 100%;
+        margin-top: 8px;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #475569;
+        background: #020817;
+        color: #e2e8f0;
+        box-sizing: border-box;
+      }
+      button {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      pre {
+        white-space: pre-wrap;
+        background: #020817;
+        border-radius: 8px;
+        padding: 16px;
+        overflow: auto;
+        margin-top: 12px;
+      }
+      h1, h3 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>AI Security Suite</h1>
+
+      <div class="card">
+        <h3>Generate Code</h3>
+        <input id="task" placeholder="Describe the task to generate" />
+        <button onclick="generateCode()">Generate</button>
+        <pre id="generatedCode">Results will appear here.</pre>
+      </div>
+
+      <div class="card">
+        <h3>Analyze Code</h3>
+        <textarea id="code" rows="12" placeholder="Paste code to analyze for security issues..."></textarea>
+        <button onclick="analyzeCode()">Analyze</button>
+        <pre id="analysisResult">Analysis will appear here.</pre>
+      </div>
+    </div>
+
+    <script>
+      async function generateCode() {
+        const task = document.getElementById('task').value;
+        const response = await fetch('http://localhost:8000/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ task, language: 'python' })
+        });
+
+        const data = await response.json();
+        document.getElementById('generatedCode').textContent = JSON.stringify(data, null, 2);
+      }
+
+      async function analyzeCode() {
+        const code = document.getElementById('code').value;
+        const response = await fetch('http://localhost:8000/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+        document.getElementById('analysisResult').textContent = JSON.stringify(data, null, 2);
+      }
+    </script>
+  </body>
+</html>
