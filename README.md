@@ -7,10 +7,11 @@ AI Security Suite is a full-stack AI-assisted application focused on secure code
 - AI-assisted code generation from natural language
 - Static security scanning for common cybersecurity risks
 - Risk scoring and severity classification
-- Simple planning engine for task execution
+- Planning engine for project execution and automation
 - FastAPI backend with REST endpoints
 - Lightweight frontend dashboard for interaction
 - Optional OpenAI API integration when an API key is configured
+- Code review and security summary API
 
 ## Stack
 
@@ -21,11 +22,23 @@ AI Security Suite is a full-stack AI-assisted application focused on secure code
 
 ## Quick Start
 
+From the repository root:
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
+PYTHONPATH=. uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Alternative if you prefer running from the backend directory:
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Open:
@@ -43,6 +56,7 @@ Add optional values:
 ```env
 OPENAI_API_KEY=your_api_key_here
 DEBUG=true
+ENVIRONMENT=development
 ```
 
 ## Main API Endpoints
@@ -53,6 +67,7 @@ DEBUG=true
 - `POST /api/analyze`
 - `POST /api/plan`
 - `POST /api/scan`
+- `POST /api/review`
 
 ## Project Structure
 

@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import settings
-from app.routers.health import router as health_router
+try:
+    from backend.app.config import settings
+    from backend.app.routers.health import router as health_router
+except ImportError:
+    from app.config import settings
+    from app.routers.health import router as health_router
 
 app = FastAPI(
     title=settings.app_name,
@@ -32,6 +36,7 @@ def root():
             "security scans",
             "task planning",
             "risk reporting",
+            "code review",
         ],
     }
 
