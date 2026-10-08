@@ -1,18 +1,19 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 
 class RiskReporter:
-    """Formats vulnerability summaries into a readable structure."""
+    """Formats security findings into a readable report."""
 
-    def build_report(self, findings: list[Dict[str, Any]]) -> Dict[str, Any]:
+    def build_report(self, findings: List[Dict[str, Any]]) -> Dict[str, Any]:
+        severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0}
+        for item in findings:
+            severity = item.get("severity", "low")
+            severity_counts[severity] = severity_counts.get(severity, 0) + 1
+
         return {
             "total_findings": len(findings),
-            "severities": {
-                "critical": sum(1 for item in findings if item.get("severity") == "critical"),
-                "high": sum(1 for item in findings if item.get("severity") == "high"),
-                "medium": sum(1 for item in findings if item.get("severity") == "medium"),
-            },
+            "by_severity": severity_counts,
             "items": findings,
         }

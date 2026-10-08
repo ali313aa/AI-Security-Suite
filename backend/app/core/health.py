@@ -8,5 +8,6 @@ class HealthService:
         return {
             "service": "AI Security Suite",
             "status": "online",
-            "modules": ["ai_agent", "security_scanner", "health"],
+            "modules": ["ai_agent", "security_scanner", "planner", "reporter"],
+            "version": "1.0.0",
         }

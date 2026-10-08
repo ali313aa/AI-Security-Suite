@@ -7,7 +7,7 @@ from app.routers.health import router as health_router
 app = FastAPI(
     title=settings.app_name,
     version=settings.api_version,
-    description="AI Security Suite API for code generation and static security analysis",
+    description="AI Security Suite API for code generation, planning, and vulnerability analysis",
     debug=settings.debug,
 )
 
@@ -27,6 +27,12 @@ def root():
     return {
         "message": f"Welcome to {settings.app_name}",
         "environment": settings.environment,
+        "features": [
+            "code generation",
+            "security scans",
+            "task planning",
+            "risk reporting",
+        ],
     }
 
 

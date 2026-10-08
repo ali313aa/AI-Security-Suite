@@ -5,96 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Security Suite</title>
     <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #111827;
+        --panel-2: #1e293b;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #38bdf8;
+        --green: #22c55e;
+        --yellow: #f59e0b;
+        --red: #ef4444;
+        --border: #334155;
+      }
+
+      * { box-sizing: border-box; }
+
       body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #0f172a, #111827);
-        color: #e2e8f0;
         margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #020817, #0f172a);
+        color: var(--text);
         padding: 32px;
       }
+
       .container {
-        max-width: 980px;
+        max-width: 1100px;
         margin: 0 auto;
       }
-      .card {
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid #334155;
-        border-radius: 12px;
-        padding: 20px;
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 20px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       }
-      textarea, input, button {
+
+      .badge {
+        background: rgba(56, 189, 248, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: rgba(17, 24, 39, 0.95);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      }
+
+      .card h3 {
+        margin-top: 0;
+      }
+
+      input, textarea, button, select {
         width: 100%;
         margin-top: 8px;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #475569;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
         background: #020817;
-        color: #e2e8f0;
-        box-sizing: border-box;
+        color: var(--text);
       }
+
+      textarea {
+        min-height: 160px;
+        resize: vertical;
+      }
+
       button {
         background: linear-gradient(135deg, #2563eb, #1d4ed8);
         color: white;
-        cursor: pointer;
         font-weight: bold;
+        cursor: pointer;
       }
+
       pre {
-        white-space: pre-wrap;
         background: #020817;
-        border-radius: 8px;
-        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        white-space: pre-wrap;
         overflow: auto;
         margin-top: 12px;
       }
-      h1, h3 {
-        margin-top: 0;
+
+      .status {
+        color: var(--muted);
+        font-size: 12px;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>AI Security Suite</h1>
-
-      <div class="card">
-        <h3>Generate Code</h3>
-        <input id="task" placeholder="Describe the task to generate" />
-        <button onclick="generateCode()">Generate</button>
-        <pre id="generatedCode">Results will appear here.</pre>
+      <div class="header">
+        <h1>AI Security Suite</h1>
+        <div class="badge">AI + Security</div>
       </div>
 
-      <div class="card">
-        <h3>Analyze Code</h3>
-        <textarea id="code" rows="12" placeholder="Paste code to analyze for security issues..."></textarea>
-        <button onclick="analyzeCode()">Analyze</button>
-        <pre id="analysisResult">Analysis will appear here.</pre>
+      <div class="grid">
+        <div class="card">
+          <h3>Generate Code</h3>
+          <input id="task" placeholder="Describe the task to generate" />
+          <select id="language">
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="bash">Bash</option>
+          </select>
+          <button onclick="generateCode()">Generate</button>
+          <pre id="generatedCode">The generated code will appear here.</pre>
+        </div>
+
+        <div class="card">
+          <h3>Analyze Code</h3>
+          <textarea id="code" placeholder="Paste code here for vulnerability analysis..."></textarea>
+          <button onclick="analyzeCode()">Analyze</button>
+          <pre id="analysisResult">Analysis results will appear here.</pre>
+        </div>
+
+        <div class="card">
+          <h3>Project Plan</h3>
+          <input id="goal" placeholder="Describe the goal or project idea" />
+          <button onclick="createPlan()">Create Plan</button>
+          <pre id="planResult">The execution plan will appear here.</pre>
+        </div>
       </div>
     </div>
 
     <script>
+      const API_BASE = 'http://localhost:8000';
+
       async function generateCode() {
         const task = document.getElementById('task').value;
-        const response = await fetch('http://localhost:8000/api/generate', {
+        const language = document.getElementById('language').value;
+        const response = await fetch(`${API_BASE}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ task, language: 'python' })
+          body: JSON.stringify({ task, language })
         });
-
         const data = await response.json();
         document.getElementById('generatedCode').textContent = JSON.stringify(data, null, 2);
       }
 
       async function analyzeCode() {
         const code = document.getElementById('code').value;
-        const response = await fetch('http://localhost:8000/api/analyze', {
+        const response = await fetch(`${API_BASE}/api/analyze`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code })
+          body: JSON.stringify({ code, filename: 'snippet.py' })
         });
-
         const data = await response.json();
         document.getElementById('analysisResult').textContent = JSON.stringify(data, null, 2);
+      }
+
+      async function createPlan() {
+        const goal = document.getElementById('goal').value;
+        const response = await fetch(`${API_BASE}/api/plan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ goal })
+        });
+        const data = await response.json();
+        document.getElementById('planResult').textContent = JSON.stringify(data, null, 2);
       }
     </script>
   </body>
